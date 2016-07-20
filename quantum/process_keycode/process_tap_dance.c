@@ -2,24 +2,41 @@
 
 static qk_tap_dance_state_t qk_tap_dance_state;
 
+static void qk_do_mods (uint16_t kc, void (*fn) (uint8_t)) {
+  switch (kc) {
+  case QK_MODS ... QK_MODS_MAX:
+    {
+      uint8_t mods = kc >> 8;
+
+      if (kc >= QK_RCTL) {
+        fn ((mods >> 4) + KC_RCTL);
+      } else {
+        fn (mods + KC_LCTL);
+      }
+    }
+  }
+}
+
 void qk_tap_dance_pair_finished (qk_tap_dance_state_t *state, void *user_data) {
   qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
+  uint16_t kc;
 
-  if (state->count == 1) {
-    register_code (pair->kc1);
-  } else if (state->count == 2) {
-    register_code (pair->kc2);
-  }
+  kc = (state->count == 1) ? pair->kc1 : pair->kc2;
+
+  qk_do_mods (kc, register_code);
+
+  register_code (kc);
 }
 
 void qk_tap_dance_pair_reset (qk_tap_dance_state_t *state, void *user_data) {
   qk_tap_dance_pair_t *pair = (qk_tap_dance_pair_t *)user_data;
+  uint16_t kc;
 
-  if (state->count == 1) {
-    unregister_code (pair->kc1);
-  } else if (state->count == 2) {
-    unregister_code (pair->kc2);
-  }
+  kc = (state->count == 1) ? pair->kc1 : pair->kc2;
+
+  qk_do_mods (kc, unregister_code);
+
+  unregister_code (kc);
 }
 
 static inline void _process_tap_dance_action_fn (qk_tap_dance_state_t *state,
