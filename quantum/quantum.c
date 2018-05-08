@@ -733,6 +733,10 @@ void tap_random_base64(void) {
   }
 }
 
+#if RGB_MATRIX_ENABLE
+static uint16_t rgb_update_timer;
+#endif
+
 void matrix_init_quantum() {
   #ifdef BACKLIGHT_ENABLE
     backlight_init_ports();
@@ -742,6 +746,7 @@ void matrix_init_quantum() {
   #endif
   #ifdef RGB_MATRIX_ENABLE
     rgb_matrix_init_drivers();
+    rgb_update_timer = timer_read();
   #endif
   matrix_init_kb();
 }
@@ -769,7 +774,11 @@ void matrix_scan_quantum() {
     // if (rgb_matrix_task_counter == 0)
     rgb_matrix_task();
     // rgb_matrix_task_counter = ((rgb_matrix_task_counter + 1) % 5);
-    rgb_matrix_update_pwm_buffers();
+
+    if (timer_elapsed(rgb_update_timer) > 32) {
+      rgb_matrix_update_pwm_buffers();
+      rgb_update_timer = timer_read();
+    }
   #endif
 
   matrix_scan_kb();
