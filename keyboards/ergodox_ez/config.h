@@ -81,10 +81,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* fix space cadet rollover issue */
 #define DISABLE_SPACE_CADET_ROLLOVER
 
-// #define RGB_MIDI
-#define RGBW_BB_TWI
+// #define RGBW_BB_TWI
 
-#define RGBW 1
+// #define RGBW 1
 
 /* "debounce" is measured in keyboard scans. Some users reported
  * needing values as high as 15, which was at the time around 50ms.
@@ -138,5 +137,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define NO_ACTION_MACRO
 //#define NO_ACTION_FUNCTION
 //#define DEBUG_MATRIX_SCAN_RATE
+
+#define I2C_TIMEOUT 1000
 
 #endif
