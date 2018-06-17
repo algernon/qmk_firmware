@@ -753,6 +753,7 @@ void rgb_matrix_init(void) {
 void rgb_matrix_setup_drivers(void) {
   // Initialize TWI
   i2c_init();
+  wait_ms(1000);
   IS31FL3731_init( DRIVER_ADDR_1 );
   IS31FL3731_init( DRIVER_ADDR_2 );
 
